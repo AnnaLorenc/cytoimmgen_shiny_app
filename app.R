@@ -39,8 +39,8 @@ genes_for_dropdown_menu <- sort(unique(c(data_with_matrices[[1]]$index,data_with
 
 main_text="Change of gene expression in CD4 cells after activation.
 We performed scRNAseq of naive and memory CD4 cells from 119 individuals.
-We analysed these two types of CD4 cells before (0h) and at several timepoints (16h, 40h, 5days) after activation.
-We located each cell on a pseudotime trajectory, from resting to highly activated cells. Here, we present average expression values for each gene (across individuals and cells) in relation to pseudotime - each of 10 pseudotime windows comprises 10% of all naive or memory cells. To relate pseudotime windows to activation timeline, underneath the heatmaps we show number of cells originating from each experimental timepoint."
+We analysed these two types of CD4 cells before (0h) and at several time points (16h, 40h, 5days) after activation.
+We located each cell on a pseudotime trajectory from resting to highly activated cells. Here, we present average expression values for each gene (across individuals and cells) in relation to pseudotime. Each of 10 pseudotime windows comprises 10% of all naive or memory cells. To relate pseudotime windows to the activation timeline, underneath the heatmaps we show number of cells originating from each experimental time point."
 
 upper_heatmap_text="For each gene, expression is normalised across pseudotime windows (expression values are not comparable between genes, only temporal trends)."
   
