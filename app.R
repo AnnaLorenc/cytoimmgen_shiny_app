@@ -40,7 +40,7 @@ genes_for_dropdown_menu <- sort(unique(c(data_with_matrices[[1]]$index,data_with
 main_text="Change of gene expression in CD4 cells after activation.
 We performed scRNAseq of naive and memory CD4 cells from 119 individuals.
 We analysed these two types of CD4 cells before (0h) and at several time points (16h, 40h, 5days) after activation.
-We located each cell on a pseudotime trajectory from resting to highly activated cells. Here, we present average expression values for each gene (across individuals and cells) in relation to pseudotime. Each of 10 pseudotime windows comprises 10% of all naive or memory cells. To relate pseudotime windows to the activation timeline, underneath the heatmaps we show number of cells originating from each experimental time point."
+We located each cell on a pseudotime trajectory from resting (bin1) to highly activated (bin10) cells. Here, we present average expression values for each gene (across individuals and cells) in relation to pseudotime. Each of 10 pseudotime windows comprises 10% of all naive or memory cells. To relate pseudotime windows to the activation timeline, underneath the heatmaps we show number of cells originating from each experimental time point."
 
 upper_heatmap_text="For each gene, expression is normalised across pseudotime windows (expression values are not comparable between genes, only temporal trends)."
   
@@ -99,10 +99,14 @@ server = function(input, output, session) {
     
     updateSelectizeInput(session, 'geneName', choices = genes_for_dropdown_menu, server = TRUE)
     
-  data_for_window_plot <- reactive({window_plot%>%filter(cell_type==input$assayNames)})
+  data_for_window_plot <- reactive({wp=window_plot%>%
+    filter(cell_type==input$assayNames)%>%
+    mutate(pseud_wind=gsub("win","bin", pseud_wind))
+  return(wp)})
     
     data_for_small_heatmap <-
         reactive({data <- data_with_matrices[[input$assayNames]]
+        colnames(data) <-gsub("win","",colnames(data))
         matrix_data <- data %>%select(-c(index))%>% data.matrix()
         rownames(matrix_data) <- data$index
         return(matrix_data)
@@ -144,14 +148,14 @@ server = function(input, output, session) {
 
     output$subsetmap = renderPlot( 
         pheatmap(small_heatmap() ,
-                 cluster_cols=FALSE, cluster_rows=FALSE, show_rownames=TRUE, scale="row", show_colnames=TRUE,,fontsize_col=20, fontsize_row = 13,angle_col = 0))#, height=300)
+                 cluster_cols=FALSE, cluster_rows=FALSE, show_rownames=TRUE, scale="row", show_colnames=TRUE,fontsize_col=20, fontsize_row = 13,angle_col = 0))#, height=300)
     
    output$naiveheatmap = renderPlot( 
           pheatmap(log10(small_heatmap() +0.000001) ,
                    cluster_cols=FALSE, cluster_rows=FALSE, show_rownames=TRUE, scale="none", show_colnames=TRUE,fontsize_col=20, fontsize_row = 13,angle_col = 0,col= colorRampPalette(brewer.pal(8, "BuPu"))(25)))#, height=300)
 
     output$celltypes_across_windows <- renderPlot(   ggplot(data_for_window_plot()) +
-                                                      geom_area(aes(x=factor(pseud_wind,levels=paste0("win", 1:10)),
+                                                      geom_area(aes(x=factor(pseud_wind,levels=paste0("bin", 1:10)),
                                                                                 y=cells, fill=Time_point, group=Time_point))+
                                                       theme_classic()+guides(fill="none")+xlab("")+scale_y_continuous(position = "right")+
                                                       facet_wrap(~Time_point, ncol=1))
