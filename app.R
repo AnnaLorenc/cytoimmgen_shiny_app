@@ -6,7 +6,7 @@ library(RColorBrewer)
 #Data preprocessing
 #see retrace_Blagojes_processing.R
 
-main_dir="data"
+
 #averaged expression values -files
 files_with_matrices <- list(naive="data/matrices_for_heatmaps/naive_mean_expression_per_window_full.txt",
                         memory="data/matrices_for_heatmaps/memory_mean_expression_per_window_full.txt")
